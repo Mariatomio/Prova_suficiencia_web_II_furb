@@ -410,6 +410,73 @@
                     }
                 ]
             }
+        },
+        "/api/comandas/minha": {
+            "get": {
+                "tags": [
+                    "Comandas"
+                ],
+                "summary": "Listar comandas e produtos do usuário autenticado",
+                "operationId": "8c46482d14a93225d98eacac620687e3",
+                "responses": {
+                    "200": {
+                        "description": "Lista de comandas com produtos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "comandas": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "produtos": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 10
+                                                                },
+                                                                "nome": {
+                                                                    "type": "string",
+                                                                    "example": "Produto A"
+                                                                },
+                                                                "preco": {
+                                                                    "type": "number",
+                                                                    "format": "float",
+                                                                    "example": 9.99
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {

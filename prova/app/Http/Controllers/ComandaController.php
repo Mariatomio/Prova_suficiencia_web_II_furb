@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
  *     title="API de Comandas"
  * )
  *
+ *  * @OA\Server(
+ *     url=L5_SWAGGER_CONST_HOST,
+ *     description="Ambiente público via ngrok"
+ * )
+ * 
  * @OA\SecurityScheme(
  *     securityScheme="sanctum",
  *     type="http",
@@ -258,8 +263,8 @@ class ComandaController extends Controller
                 $produtoIds[] = $produto->id;
             }
 
-            $comanda->produtos()->sync($produtoIds); //remove os itens
-            /* $comanda->produtos()->syncWithoutDetaching($produtoIds); */
+            $comanda->produtos()->syncWithoutDetaching($produtoIds);
+            /* $comanda->produtos()->sync($produtoIds); */  //remove os itens
 
             return response()->json([
                 'id' => $comanda->id,
@@ -295,13 +300,59 @@ class ComandaController extends Controller
             $comanda->produtos()->detach();
             $comanda->delete();
 
-            return response()->json(['success' => ['text' => 'comanda removida']], 200);
+            return response()->json("", 204);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Comanda não encontrada'], 404);
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json(['error' => 'Erro no banco de dados: ' . $e->getMessage()], 500);
         } catch (\Throwable $e) {
             return response()->json(['error' => 'Erro inesperado: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/comandas/minha",
+     *     summary="Listar comandas e produtos do usuário autenticado",
+     *     tags={"Comandas"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de comandas com produtos",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="comandas",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="produtos", type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=10),
+     *                             @OA\Property(property="nome", type="string", example="Produto A"),
+     *                             @OA\Property(property="preco", type="number", format="float", example=9.99)
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Não autorizado"),
+     *     @OA\Response(response=500, description="Erro interno do servidor")
+     * )
+     */
+    public function minhasComandas(Request $request)
+    {
+        try {
+            return $request->user()->load('comandas.produtos');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Erro ao carregar as minhas comandas',
+                'details' => $th->getMessage()
+            ], 500);
         }
     }
 }

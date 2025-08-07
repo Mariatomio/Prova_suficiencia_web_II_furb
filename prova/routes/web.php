@@ -9,3 +9,8 @@ Route::get('/', function () {
 Route::get('/teste', function () {
     return 'Funcionando!';
 });
+
+// Route::get('/swagger', function () {
+//     return redirect('/api/documentation');
+// });
+

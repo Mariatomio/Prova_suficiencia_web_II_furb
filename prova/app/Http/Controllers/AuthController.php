@@ -75,38 +75,4 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logout realizado com sucesso.']);
     }
-
-    /**
-     * @OA\Get(
-     *     path="/api/comandas/minha",
-     *     summary="Listar comandas e produtos do usuário autenticado",
-     *     tags={"Comandas"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista de comandas com produtos",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="comandas",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="produtos", type="array",
-     *                         @OA\Items(
-     *                             type="object",
-     *                             @OA\Property(property="id", type="integer", example=10),
-     *                             @OA\Property(property="nome", type="string", example="Produto A"),
-     *                             @OA\Property(property="preco", type="number", format="float", example=9.99)
-     *                         )
-     *                     )
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(response=401, description="Não autorizado"),
-     *     @OA\Response(response=500, description="Erro interno do servidor")
-     * )
-     */
 }

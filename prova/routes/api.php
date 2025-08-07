@@ -12,23 +12,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:sanctum')->get('/comandas/minha', function (Request $request) {
-    try {
-        return $request->user()->load('comandas.produtos');
-    } catch (\Throwable $th) {
-        return response()->json([
-            'error' => true,
-            'message' => 'Erro ao carregar comandas',
-            'details' => $th->getMessage()
-        ], 500);
-    }
-});
-
-
+Route::middleware('auth:sanctum')->get('/comandas/minhas', [ComandaController::class, 'minhasComandas']);
 
 //Comanda
 Route::get('/comandas', [ComandaController::class, 'index']);
 Route::get('/comandas/{id}', [ComandaController::class, 'show']);
 Route::post('/comandas', [ComandaController::class, 'store']);
 Route::put('/comandas/{id}', [ComandaController::class, 'update']);
+Route::patch('/comandas/{id}', [ComandaController::class, 'update']);
 Route::delete('/comandas/{id}', [ComandaController::class, 'destroy']);
+
+
